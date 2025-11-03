@@ -29,7 +29,7 @@ st.markdown("""
         color: black;
     }
     .sidebar-header {
-        color: white;
+        color: black;
         font-weight: bold;
         font-size: 1.2em;
         margin-bottom: 1rem;
@@ -313,4 +313,5 @@ try:
 except Exception as e:
     st.error(f"❌ Terjadi kesalahan: {str(e)}")
     st.info("💡 Pastikan file 'Data Siswa.csv' tersedia dengan format yang benar.")
+
 
