@@ -301,7 +301,7 @@ set_nemo_background()
 # SIDEBAR
 # ===============================
 with st.sidebar:
-    st.markdown('<div class="sidebar-header">🐠 MENU ANALISIS LAUTAN SISWA</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-header">🐠 MENU ANALISIS SISWA</div>', unsafe_allow_html=True)
     
     st.markdown("---")
     st.markdown("**🔧 Pengaturan Analisis**")
@@ -458,6 +458,7 @@ with col3:
     <p>Siswa memiliki nilai dan/atau kehadiran yang relatif rendah. Disarankan untuk pendampingan akademik atau konseling kehadiran.</p>
     </div>
     """, unsafe_allow_html=True)
+
 
 
 
