@@ -1,38 +1,68 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import pickle  # ✅ Import pickle yang hilang
+import pickle
 from pathlib import Path
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
-import os  # ✅ Tambahkan os untuk handling file
+import os
 
-# === Gaya CSS Kustom ===
+# === Gaya CSS Kustom dengan Tema Anak-Anak ===
 st.markdown("""
 <style>
     .main {
-        background: linear-gradient(135deg, #f5f7fa, #e3f2fd);
+        background: linear-gradient(135deg, #ffebee, #e3f2fd, #e8f5e9);
     }
     h1 {
-        color: #1976d2;
+        color: #FF6B6B;
         text-align: center;
-        font-family: 'Segoe UI', 'Comic Sans MS', sans-serif;
+        font-family: 'Comic Sans MS', cursive;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    h2, h3 {
+        color: #4ECDC4;
+        font-family: 'Comic Sans MS', cursive;
     }
     .stDataFrame {
-        border: 2px solid #2196f3;
-        border-radius: 10px;
+        border: 3px dashed #FFD93D;
+        border-radius: 15px;
         background-color: white;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     .sidebar .sidebar-content {
-        background: linear-gradient(180deg, #1976d2, #2196f3);
-        color: black;
+        background: linear-gradient(180deg, #FF9A8B, #FF6B6B, #FFD93D);
+        color: white;
     }
     .sidebar-header {
-        color: black;
+        color: white;
         font-weight: bold;
-        font-size: 1.2em;
+        font-size: 1.3em;
         margin-bottom: 1rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+    .stButton>button {
+        background: linear-gradient(45deg, #FF6B6B, #FFD93D);
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+        font-family: 'Comic Sans MS', cursive;
+        font-size: 16px;
+        transition: all 0.3s;
+    }
+    .stButton>button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(255,107,107,0.4);
+    }
+    .stDownloadButton>button {
+        background: linear-gradient(45deg, #4ECDC4, #6A89CC);
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+        font-family: 'Comic Sans MS', cursive;
+        font-size: 16px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -48,11 +78,10 @@ KMEANS_MODEL_PATH = "kmeans_model.pkl"
 SCALER_PATH = "scaler.pkl"
 DATA_FILE_PATH = "Data Siswa.csv"
 
-# === Fungsi Clustering ===
+# === Fungsi Clustering (TIDAK DIUBAH) ===
 def perform_clustering(df_students):
     features = df_students[["Nilai Akademik", "Kehadiran(%)"]].copy()
 
-    # ✅ Perbaikan: Gunakan os.path.exists untuk pengecekan file
     if os.path.exists(KMEANS_MODEL_PATH) and os.path.exists(SCALER_PATH):
         try:
             with open(KMEANS_MODEL_PATH, 'rb') as f:
@@ -86,34 +115,32 @@ def perform_clustering(df_students):
     cluster_labels = kmeans.predict(features_scaled)
     df_students["Cluster"] = cluster_labels
 
-    # Mapping berdasarkan rata-rata gabungan
     centroids_scaled = kmeans.cluster_centers_
     centroids_original = scaler.inverse_transform(centroids_scaled)
     centroids_df = pd.DataFrame(centroids_original, columns=["Nilai Akademik", "Kehadiran(%)"])
     centroids_df['Rata_Rata'] = (centroids_df['Nilai Akademik'] + centroids_df['Kehadiran(%)']) / 2
     sorted_clusters = centroids_df.sort_values('Rata_Rata', ascending=False).index
 
-    # Gunakan kategori: Tinggi, Sedang, Rendah
     cluster_mapping = {
-        int(sorted_clusters[0]): "Tinggi",  # ✅ Konversi ke int
-        int(sorted_clusters[1]): "Sedang",  # ✅ Konversi ke int
-        int(sorted_clusters[2]): "Rendah"   # ✅ Konversi ke int
+        int(sorted_clusters[0]): "Tinggi",
+        int(sorted_clusters[1]): "Sedang",
+        int(sorted_clusters[2]): "Rendah"
     }
     df_students["Kategori"] = df_students["Cluster"].map(cluster_mapping)
     return df_students
 
 # === SIDEBAR ===
 with st.sidebar:
-    st.markdown('<div class="sidebar-header">📊 MENU ANALISIS</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-header">🎮 MENU ANALISIS SISWA</div>', unsafe_allow_html=True)
     
     st.markdown("---")
     st.markdown("**🔧 Pengaturan Analisis**")
     
     # Filter kategori untuk ditampilkan
-    st.subheader("Filter Kategori")
-    show_tinggi = st.checkbox("Tinggi", value=True)
-    show_sedang = st.checkbox("Sedang", value=True)
-    show_rendah = st.checkbox("Rendah", value=True)
+    st.subheader("🎯 Filter Kategori")
+    show_tinggi = st.checkbox("Tinggi 🟢", value=True)
+    show_sedang = st.checkbox("Sedang 🟡", value=True)
+    show_rendah = st.checkbox("Rendah 🔴", value=True)
     
     st.markdown("---")
     st.markdown("**📈 Pengaturan Visualisasi**")
@@ -127,13 +154,13 @@ with st.sidebar:
     
     st.info("""
     Aplikasi ini menggunakan algoritma **K-Means Clustering** untuk mengelompokkan siswa berdasarkan:
-    - Nilai Akademik
-    - Persentase Kehadiran
+    - 📝 Nilai Akademik
+    - 🎯 Persentase Kehadiran
     """)
     
     st.markdown("---")
     st.markdown("**🏫 Tentang**")
-    st.write("SDN 273 Gempol Sari")
+    st.write("🎒 SDN 273 Gempol Sari")
     st.write("Sistem Pendukung Keputusan Akademik")
 
 # === Judul ===
@@ -142,7 +169,6 @@ st.markdown("### Menggunakan Algoritma **K-Means Clustering** Berdasarkan **Nila
 
 # === Baca Data ===
 try:
-    # ✅ Cek apakah file data exists
     if not os.path.exists(DATA_FILE_PATH):
         st.error(f"❌ File '{DATA_FILE_PATH}' tidak ditemukan!")
         st.info("💡 Pastikan file 'Data Siswa.csv' berada di folder yang sama dengan aplikasi ini.")
@@ -171,18 +197,18 @@ try:
         st.sidebar.write(f"Total Data: {len(df)} siswa")
         
         # Clustering
-        with st.spinner("🔄 Melakukan clustering... Mohon tunggu"):
+        with st.spinner("🔮 Sedang melakukan clustering... Mohon tunggu"):
             df = perform_clustering(df)
 
         # Tampilkan statistik kategori di sidebar
         with st.sidebar:
             col1, col2, col3 = st.columns(3)
             with col1:
-                st.metric("Tinggi", len(df[df["Kategori"] == "Tinggi"]))
+                st.metric("🟢 Tinggi", len(df[df["Kategori"] == "Tinggi"]))
             with col2:
-                st.metric("Sedang", len(df[df["Kategori"] == "Sedang"]))
+                st.metric("🟡 Sedang", len(df[df["Kategori"] == "Sedang"]))
             with col3:
-                st.metric("Rendah", len(df[df["Kategori"] == "Rendah"]))
+                st.metric("🔴 Rendah", len(df[df["Kategori"] == "Rendah"]))
 
         # === TAMPILKAN HASIL DENGAN KATEGORI: TINGGI/SEDANG/RENDAH ===
         st.subheader("🎯 Hasil Klasifikasi Siswa")
@@ -203,11 +229,11 @@ try:
         # Fungsi untuk styling
         def color_kategori(val):
             if val == "Tinggi":
-                return "background-color: #c8e6c9; color: #2e7d32; font-weight: bold"
+                return "background-color: #c8e6c9; color: #2e7d32; font-weight: bold; font-family: 'Comic Sans MS';"
             elif val == "Sedang":
-                return "background-color: #ffecb3; color: #f57c00; font-weight: bold"
+                return "background-color: #ffecb3; color: #f57c00; font-weight: bold; font-family: 'Comic Sans MS';"
             elif val == "Rendah":
-                return "background-color: #ffcdd2; color: #c62828; font-weight: bold"
+                return "background-color: #ffcdd2; color: #c62828; font-weight: bold; font-family: 'Comic Sans MS';"
             else:
                 return ""
         
@@ -218,7 +244,7 @@ try:
 
         # === Visualisasi ===
         st.subheader("📈 Visualisasi Clustering")
-        plt.rcParams.update({'font.family': 'Segoe UI', 'font.size': 11})
+        plt.rcParams.update({'font.family': 'Comic Sans MS', 'font.size': 11})
         fig, ax = plt.subplots(figsize=(chart_size, 6))
         color_map = {"Tinggi": "#4caf50", "Sedang": "#ff9800", "Rendah": "#f44336"}
         
@@ -226,7 +252,7 @@ try:
         df_viz = df[df["Kategori"].isin(kategori_filter)]
         
         for kategori in ["Tinggi", "Sedang", "Rendah"]:
-            if kategori in kategori_filter:  # Hanya plot kategori yang dipilih
+            if kategori in kategori_filter:
                 group = df_viz[df_viz["Kategori"] == kategori]
                 if not group.empty:
                     ax.scatter(
@@ -274,7 +300,7 @@ try:
         csv = convert_df_to_csv(df[["Nama Siswa", "Nilai Akademik", "Kehadiran(%)", "Kategori"]])
         
         st.download_button(
-            label="Download CSV Hasil Klasifikasi",
+            label="💾 Download CSV Hasil Klasifikasi",
             data=csv,
             file_name="hasil_klasifikasi_siswa.csv",
             mime="text/csv",
@@ -306,7 +332,7 @@ try:
             Siswa memiliki nilai dan/atau kehadiran yang relatif rendah. Disarankan untuk pendampingan akademik atau konseling kehadiran.
             """)
 
-        if st.button("✅ Selesai Analisis", type="primary"):
+        if st.button("🎉 Selesai Analisis", type="primary"):
             st.balloons()
             st.success("Analisis berhasil diselesaikan!")
 
@@ -314,4 +340,10 @@ except Exception as e:
     st.error(f"❌ Terjadi kesalahan: {str(e)}")
     st.info("💡 Pastikan file 'Data Siswa.csv' tersedia dengan format yang benar.")
 
-
+# === Footer ===
+st.markdown("---")
+st.markdown("""
+<div style='text-align: center; color: #666; font-family: Comic Sans MS;'>
+    <p>Dibuat dengan ❤️ untuk SDN 273 Gempol Sari</p>
+</div>
+""", unsafe_allow_html=True)
