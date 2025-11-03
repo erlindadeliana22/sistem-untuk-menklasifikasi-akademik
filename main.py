@@ -27,10 +27,11 @@ def set_nemo_background():
     }
     
     .stApp {
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.92);
         border-radius: 15px;
         margin: 10px;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        min-height: 100vh;
     }
     
     h1 {
@@ -109,16 +110,17 @@ def set_nemo_background():
     /* Bubble animations */
     .bubble {
         position: fixed;
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.4);
         border-radius: 50%;
         animation: float 20s infinite ease-in-out;
         z-index: -1;
+        border: 2px solid rgba(255, 255, 255, 0.6);
     }
     
     @keyframes float {
         0% { transform: translateY(100vh) scale(0); opacity: 0; }
-        10% { opacity: 0.7; }
-        90% { opacity: 0.7; }
+        10% { opacity: 0.8; }
+        90% { opacity: 0.8; }
         100% { transform: translateY(-100vh) scale(1); opacity: 0; }
     }
     
@@ -128,6 +130,7 @@ def set_nemo_background():
         font-size: 30px;
         animation: swim 25s infinite linear;
         z-index: -1;
+        filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
     }
     
     @keyframes swim {
@@ -136,29 +139,53 @@ def set_nemo_background():
         51% { transform: translateX(50vw) translateY(30vh) scaleX(-1); }
         100% { transform: translateX(100vw) translateY(70vh) scaleX(-1); }
     }
+    
+    /* Coral reef decoration */
+    .coral {
+        position: fixed;
+        bottom: 0;
+        font-size: 40px;
+        z-index: -1;
+    }
     </style>
     """, unsafe_allow_html=True)
     
-    # Add bubbles
-    bubble_html = ""
-    for i in range(15):
-        size = np.random.randint(20, 60)
-        left = np.random.randint(0, 100)
-        delay = np.random.randint(0, 10)
-        duration = np.random.randint(15, 25)
-        bubble_html += f"""
-        <div class="bubble" style="width: {size}px; height: {size}px; left: {left}%; 
-              animation-delay: {delay}s; animation-duration: {duration}s;"></div>
-        """
+    # Add specific bubbles from your code
+    bubble_html = """
+    <div class="bubble" style="width: 42px; height: 42px; left: 56%; animation-delay: 4s; animation-duration: 19s;"></div>
+    <div class="bubble" style="width: 30px; height: 30px; left: 59%; animation-delay: 3s; animation-duration: 21s;"></div>
+    <div class="bubble" style="width: 46px; height: 46px; left: 27%; animation-delay: 1s; animation-duration: 16s;"></div>
+    <div class="bubble" style="width: 57px; height: 57px; left: 33%; animation-delay: 3s; animation-duration: 16s;"></div>
+    <div class="bubble" style="width: 26px; height: 26px; left: 61%; animation-delay: 0s; animation-duration: 24s;"></div>
+    <div class="bubble" style="width: 47px; height: 47px; left: 31%; animation-delay: 3s; animation-duration: 20s;"></div>
+    <div class="bubble" style="width: 27px; height: 27px; left: 54%; animation-delay: 7s; animation-duration: 24s;"></div>
+    <div class="bubble" style="width: 54px; height: 54px; left: 62%; animation-delay: 5s; animation-duration: 15s;"></div>
+    <div class="bubble" style="width: 20px; height: 20px; left: 60%; animation-delay: 8s; animation-duration: 18s;"></div>
+    <div class="bubble" style="width: 42px; height: 42px; left: 76%; animation-delay: 9s; animation-duration: 20s;"></div>
+    <div class="bubble" style="width: 28px; height: 28px; left: 13%; animation-delay: 1s; animation-duration: 16s;"></div>
+    <div class="bubble" style="width: 38px; height: 38px; left: 0%; animation-delay: 1s; animation-duration: 19s;"></div>
+    <div class="bubble" style="width: 33px; height: 33px; left: 69%; animation-delay: 3s; animation-duration: 23s;"></div>
+    <div class="bubble" style="width: 48px; height: 48px; left: 47%; animation-delay: 0s; animation-duration: 18s;"></div>
+    """
     
-    # Add Nemo fish
+    # Add Nemo fish and other sea creatures
     nemo_html = """
     <div class="nemo-fish" style="top: 20%; animation-delay: 0s;">🐠</div>
     <div class="nemo-fish" style="top: 60%; animation-delay: 5s; animation-duration: 30s;">🐡</div>
     <div class="nemo-fish" style="top: 80%; animation-delay: 10s; animation-duration: 20s;">🐟</div>
+    <div class="nemo-fish" style="top: 40%; animation-delay: 15s; animation-duration: 25s;">🦈</div>
     """
     
-    st.markdown(bubble_html + nemo_html, unsafe_allow_html=True)
+    # Add coral reef at the bottom
+    coral_html = """
+    <div class="coral" style="left: 10%;">🌊</div>
+    <div class="coral" style="left: 25%;">🐚</div>
+    <div class="coral" style="left: 40%;">🌴</div>
+    <div class="coral" style="left: 70%;">🌊</div>
+    <div class="coral" style="left: 85%;">🐚</div>
+    """
+    
+    st.markdown(bubble_html + nemo_html + coral_html, unsafe_allow_html=True)
 
 # === Set background Nemo ===
 set_nemo_background()
@@ -416,24 +443,30 @@ try:
         
         with col1:
             st.markdown("""
-            #### 🐬 **Tinggi** 
-            **Performa Sangat Baik**  
-            Siswa memiliki nilai akademik tinggi **dan** kehadiran sangat baik. Mereka konsisten dan berpotensi menjadi teladan.
-            """)
+            <div style='background: linear-gradient(45deg, #87CEEB, #1E90FF); padding: 20px; border-radius: 15px; color: white;'>
+            <h4>🐬 <b>Tinggi</b></h4>
+            <p><b>Performa Sangat Baik</b></p>
+            <p>Siswa memiliki nilai akademik tinggi <b>dan</b> kehadiran sangat baik. Mereka konsisten dan berpotensi menjadi teladan.</p>
+            </div>
+            """, unsafe_allow_html=True)
         
         with col2:
             st.markdown("""
-            #### 🐢 **Sedang** 
-            **Performa Cukup**  
-            Siswa memiliki kombinasi nilai dan kehadiran yang stabil, namun masih ada ruang untuk peningkatan.
-            """)
+            <div style='background: linear-gradient(45deg, #98FB98, #32CD32); padding: 20px; border-radius: 15px; color: white;'>
+            <h4>🐢 <b>Sedang</b></h4>
+            <p><b>Performa Cukup</b></p>
+            <p>Siswa memiliki kombinasi nilai dan kehadiran yang stabil, namun masih ada ruang untuk peningkatan.</p>
+            </div>
+            """, unsafe_allow_html=True)
         
         with col3:
             st.markdown("""
-            #### 🐠 **Rendah** 
-            **Performa Perlu Perhatian**  
-            Siswa memiliki nilai dan/atau kehadiran yang relatif rendah. Disarankan untuk pendampingan akademik atau konseling kehadiran.
-            """)
+            <div style='background: linear-gradient(45deg, #FFB6C1, #FF69B4); padding: 20px; border-radius: 15px; color: white;'>
+            <h4>🐠 <b>Rendah</b></h4>
+            <p><b>Performa Perlu Perhatian</b></p>
+            <p>Siswa memiliki nilai dan/atau kehadiran yang relatif rendah. Disarankan untuk pendampingan akademik atau konseling kehadiran.</p>
+            </div>
+            """, unsafe_allow_html=True)
 
         if st.button("🎉 Selesai Analisis", type="primary"):
             st.balloons()
@@ -446,8 +479,9 @@ except Exception as e:
 # === Footer ===
 st.markdown("---")
 st.markdown("""
-<div style='text-align: center; color: #666; font-family: Comic Sans MS;'>
-    <p>🐠 Dibuat dengan ❤️ untuk SDN 273 Gempol Sari 🐠</p>
+<div style='text-align: center; color: #666; font-family: Comic Sans MS; background: rgba(255,255,255,0.8); padding: 20px; border-radius: 15px;'>
+    <h3>🐠 Dibuat dengan ❤️ untuk SDN 273 Gempol Sari 🐠</h3>
     <p>Selamat Berpetualang di Lautan Pendidikan! 🌊</p>
+    <p>Mari bersama-sama berenang menuju prestasi! 🏊‍♂️📚</p>
 </div>
 """, unsafe_allow_html=True)
