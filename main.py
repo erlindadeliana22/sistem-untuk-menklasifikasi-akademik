@@ -26,7 +26,7 @@ st.markdown("""
     }
     .sidebar .sidebar-content {
         background: linear-gradient(180deg, #1976d2, #2196f3);
-        color: white;
+        color: black;
     }
     .sidebar-header {
         color: white;
@@ -313,3 +313,4 @@ try:
 except Exception as e:
     st.error(f"❌ Terjadi kesalahan: {str(e)}")
     st.info("💡 Pastikan file 'Data Siswa.csv' tersedia dengan format yang benar.")
+
