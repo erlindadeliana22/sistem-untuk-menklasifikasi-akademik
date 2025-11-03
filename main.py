@@ -443,4 +443,15 @@ with col1:
 
 with col2:
     st.markdown("""
-    <div style='background: linear-gradient(45deg, #98FB98
+    <div style='background: linear-gradient(45deg, #98FB98, #32CD32); padding: 20px; border-radius: 15px; color: white;'>
+    <h4>🐢 <b>Sedang</b></h4>
+    <p><b>Performa Cukup</b></p>
+    <p>Siswa memiliki kombinasi nilai dan kehadiran yang stabil, namun masih ada ruang untuk peningkatan.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown("""
+    <div style='background: linear-gradient(45deg, #FFB6C1, #FF69B4); padding: 20px; border-radius: 15px; color: white;'>
+    <h4>🐠 <b>Rendah</b></h4>
+    <p><b>Performa Perlu Perhatian</b></p
