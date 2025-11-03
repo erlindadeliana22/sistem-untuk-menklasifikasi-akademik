@@ -68,12 +68,12 @@ def set_nemo_background():
     
     .sidebar .sidebar-content {
         background: linear-gradient(180deg, #FF8C42, #FF6B35, #1E90FF);
-        color: white;
+        color: black;
         border-right: 3px solid #FFD700;
     }
     
     .sidebar-header {
-        color: white;
+        color: black;
         font-weight: bold;
         font-size: 1.3em;
         margin-bottom: 1rem;
@@ -458,5 +458,6 @@ with col3:
     <p>Siswa memiliki nilai dan/atau kehadiran yang relatif rendah. Disarankan untuk pendampingan akademik atau konseling kehadiran.</p>
     </div>
     """, unsafe_allow_html=True)
+
 
 
