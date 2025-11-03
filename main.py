@@ -115,102 +115,8 @@ def set_nemo_background():
         transform: scale(1.05);
         box-shadow: 0 6px 12px rgba(30,144,255,0.4);
     }
-    
-    /* Bubble animations */
-    .bubble {
-        position: fixed;
-        background: rgba(255, 255, 255, 0.4);
-        border-radius: 50%;
-        animation: float 20s infinite ease-in-out;
-        z-index: -1;
-        border: 2px solid rgba(255, 255, 255, 0.6);
-    }
-    
-    @keyframes float {
-        0% { transform: translateY(100vh) scale(0); opacity: 0; }
-        10% { opacity: 0.8; }
-        90% { opacity: 0.8; }
-        100% { transform: translateY(-100vh) scale(1); opacity: 0; }
-    }
-    
-    /* Nemo fish decoration */
-    .nemo-fish {
-        position: fixed;
-        font-size: 30px;
-        animation: swim 25s infinite linear;
-        z-index: -1;
-        filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
-    }
-    
-    @keyframes swim {
-        0% { transform: translateX(-100px) translateY(50vh) scaleX(1); }
-        50% { transform: translateX(50vw) translateY(30vh) scaleX(1); }
-        51% { transform: translateX(50vw) translateY(30vh) scaleX(-1); }
-        100% { transform: translateX(100vw) translateY(70vh) scaleX(-1); }
-    }
-    
-    /* Coral reef decoration */
-    .coral {
-        position: fixed;
-        bottom: 0;
-        font-size: 40px;
-        z-index: -1;
-    }
-    
-    /* Background untuk konten utama */
-    .block-container {
-        background: linear-gradient(135deg, #E6F3FF, #F0F8FF);
-        border-radius: 15px;
-        padding: 20px;
-        margin: 10px;
-    }
-    
-    /* Style untuk metric cards */
-    [data-testid="metric-container"] {
-        background-color: #D9F0FF;
-        border: 2px solid #99D6FF;
-        border-radius: 10px;
-        padding: 10px;
-        text-align: center;
-    }
     </style>
     """, unsafe_allow_html=True)
-    
-    # Dekorasi gelembung
-    bubble_html = """
-    <div class="bubble" style="width: 42px; height: 42px; left: 56%; animation-delay: 4s; animation-duration: 19s;"></div>
-    <div class="bubble" style="width: 30px; height: 30px; left: 59%; animation-delay: 3s; animation-duration: 21s;"></div>
-    <div class="bubble" style="width: 46px; height: 46px; left: 27%; animation-delay: 1s; animation-duration: 16s;"></div>
-    <div class="bubble" style="width: 57px; height: 57px; left: 33%; animation-delay: 3s; animation-duration: 16s;"></div>
-    <div class="bubble" style="width: 26px; height: 26px; left: 61%; animation-delay: 0s; animation-duration: 24s;"></div>
-    <div class="bubble" style="width: 47px; height: 47px; left: 31%; animation-delay: 3s; animation-duration: 20s;"></div>
-    <div class="bubble" style="width: 27px; height: 27px; left: 54%; animation-delay: 7s; animation-duration: 24s;"></div>
-    <div class="bubble" style="width: 54px; height: 54px; left: 62%; animation-delay: 5s; animation-duration: 15s;"></div>
-    <div class="bubble" style="width: 20px; height: 20px; left: 60%; animation-delay: 8s; animation-duration: 18s;"></div>
-    <div class="bubble" style="width: 42px; height: 42px; left: 76%; animation-delay: 9s; animation-duration: 20s;"></div>
-    <div class="bubble" style="width: 28px; height: 28px; left: 13%; animation-delay: 1s; animation-duration: 16s;"></div>
-    <div class="bubble" style="width: 38px; height: 38px; left: 0%; animation-delay: 1s; animation-duration: 19s;"></div>
-    <div class="bubble" style="width: 33px; height: 33px; left: 69%; animation-delay: 3s; animation-duration: 23s;"></div>
-    <div class="bubble" style="width: 48px; height: 48px; left: 47%; animation-delay: 0s; animation-duration: 18s;"></div>
-    """
-    
-    # Ikan dan dekorasi laut
-    nemo_html = """
-    <div class="nemo-fish" style="top: 20%; animation-delay: 0s;">🐠</div>
-    <div class="nemo-fish" style="top: 60%; animation-delay: 5s; animation-duration: 30s;">🐡</div>
-    <div class="nemo-fish" style="top: 80%; animation-delay: 10s; animation-duration: 20s;">🐟</div>
-    <div class="nemo-fish" style="top: 40%; animation-delay: 15s; animation-duration: 25s;">🦈</div>
-    """
-    
-    coral_html = """
-    <div class="coral" style="left: 10%;">🌊</div>
-    <div class="coral" style="left: 25%;">🐚</div>
-    <div class="coral" style="left: 40%;">🌴</div>
-    <div class="coral" style="left: 70%;">🌊</div>
-    <div class="coral" style="left: 85%;">🐚</div>
-    """
-    
-    st.markdown(bubble_html + nemo_html + coral_html, unsafe_allow_html=True)
 
 # ===============================
 # FUNGSI CLUSTERING
@@ -263,4 +169,278 @@ def create_new_model(features):
 def map_clusters_to_categories(kmeans, scaler):
     """Mapping cluster ke kategori Tinggi, Sedang, Rendah"""
     centroids_scaled = kmeans.cluster_centers_
-    centro
+    centroids_original = scaler.inverse_transform(centroids_scaled)
+    centroids_df = pd.DataFrame(centroids_original, columns=["Nilai Akademik", "Kehadiran(%)"])
+    centroids_df['Rata_Rata'] = (centroids_df['Nilai Akademik'] + centroids_df['Kehadiran(%)']) / 2
+    sorted_clusters = centroids_df.sort_values('Rata_Rata', ascending=False).index
+
+    return {
+        int(sorted_clusters[0]): "Tinggi",
+        int(sorted_clusters[1]): "Sedang", 
+        int(sorted_clusters[2]): "Rendah"
+    }
+
+# ===============================
+# FUNGSI HELPER
+# ===============================
+def load_and_clean_data():
+    """Memuat dan membersihkan data dari file CSV"""
+    if not os.path.exists(DATA_FILE_PATH):
+        # Jika file tidak ada, buat data sample
+        st.warning("📝 File 'Data Siswa.csv' tidak ditemukan. Menggunakan data sample untuk demo.")
+        
+        # Data sample
+        sample_data = {
+            "Nama Siswa": ["Andi", "Budi", "Citra", "Dewi", "Eka", "Fajar", "Gita", "Hadi", "Indra", "Joko", 
+                          "Kiki", "Lina", "Mira", "Nina", "Oki", "Putri", "Rani", "Sari", "Toni", "Wati"],
+            "Nilai Akademik": [85, 78, 92, 65, 88, 72, 95, 68, 82, 75, 89, 79, 91, 67, 84, 76, 93, 70, 81, 74],
+            "Kehadiran(%)": [90, 85, 95, 70, 92, 80, 98, 75, 88, 82, 91, 83, 96, 72, 87, 79, 94, 77, 86, 78]
+        }
+        
+        df = pd.DataFrame(sample_data)
+        return df
+    
+    try:
+        df = pd.read_csv(DATA_FILE_PATH, sep=';', engine='python')
+        df.columns = df.columns.str.strip().str.replace(r'\s+', ' ', regex=True)
+        df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+        df = df.dropna(axis=1, how='all')
+
+        if len(df.columns) >= 3:
+            df.columns = ["Nama Siswa", "Nilai Akademik", "Kehadiran(%)"]
+        else:
+            st.warning("Format file tidak sesuai. Menggunakan data sample.")
+            return create_sample_data()
+
+        # Cleaning data
+        df = df.dropna(subset=["Nama Siswa"]).reset_index(drop=True)
+        df["Nilai Akademik"] = pd.to_numeric(df["Nilai Akademik"], errors='coerce')
+        df["Kehadiran(%)"] = pd.to_numeric(df["Kehadiran(%)"], errors='coerce')
+        df = df.dropna(subset=["Nilai Akademik", "Kehadiran(%)"])
+
+        if df.empty:
+            st.warning("Tidak ada data valid. Menggunakan data sample.")
+            return create_sample_data()
+            
+        return df
+        
+    except Exception as e:
+        st.error(f"❌ Error memuat data: {str(e)}")
+        st.info("Menggunakan data sample untuk melanjutkan...")
+        return create_sample_data()
+
+def create_sample_data():
+    """Membuat data sample"""
+    sample_data = {
+        "Nama Siswa": ["Andi", "Budi", "Citra", "Dewi", "Eka", "Fajar", "Gita", "Hadi", "Indra", "Joko"],
+        "Nilai Akademik": [85, 78, 92, 65, 88, 72, 95, 68, 82, 75],
+        "Kehadiran(%)": [90, 85, 95, 70, 92, 80, 98, 75, 88, 82]
+    }
+    return pd.DataFrame(sample_data)
+
+def color_kategori(val):
+    """Styling untuk kolom kategori"""
+    if val == "Tinggi":
+        return "background-color: #87CEEB; color: #006994; font-weight: bold; font-family: 'Comic Sans MS'; border: 2px solid #1E90FF;"
+    elif val == "Sedang":
+        return "background-color: #98FB98; color: #228B22; font-weight: bold; font-family: 'Comic Sans MS'; border: 2px solid #32CD32;"
+    elif val == "Rendah":
+        return "background-color: #FFB6C1; color: #DC143C; font-weight: bold; font-family: 'Comic Sans MS'; border: 2px solid #FF69B4;"
+    else:
+        return ""
+
+def create_scatter_plot(df, kategori_filter, chart_size, point_size):
+    """Membuat scatter plot untuk visualisasi clustering"""
+    plt.rcParams.update({'font.family': 'Comic Sans MS', 'font.size': 11})
+    fig, ax = plt.subplots(figsize=(chart_size, 6))
+    
+    color_map = {"Tinggi": "#1E90FF", "Sedang": "#32CD32", "Rendah": "#FF6B35"}
+    df_viz = df[df["Kategori"].isin(kategori_filter)]
+    
+    for kategori in ["Tinggi", "Sedang", "Rendah"]:
+        if kategori in kategori_filter:
+            group = df_viz[df_viz["Kategori"] == kategori]
+            if not group.empty:
+                ax.scatter(
+                    group["Nilai Akademik"],
+                    group["Kehadiran(%)"],
+                    label=kategori,
+                    color=color_map[kategori],
+                    s=point_size,
+                    edgecolor='black',
+                    linewidth=1,
+                    alpha=0.9
+                )
+    
+    # Styling plot
+    ax.set_facecolor('#F0F8FF')
+    ax.set_xlabel("Nilai Akademik", fontweight='bold')
+    ax.set_ylabel("Kehadiran (%)", fontweight='bold')
+    ax.set_title("Klasifikasi Siswa: Nilai vs Kehadiran 🐠", fontweight='bold')
+    ax.legend(title="Kategori", fontsize=10)
+    ax.grid(True, linestyle='--', alpha=0.3)
+    ax.set_xlim(60, 100)
+    ax.set_ylim(60, 100)
+    
+    return fig
+
+# ===============================
+# SETUP APLIKASI
+# ===============================
+st.set_page_config(
+    page_title="Klasifikasi Performa Akademik Siswa - SDN 273 Gempol Sari",
+    layout="wide",
+    page_icon="🐠",
+    initial_sidebar_state="expanded"
+)
+
+# Set background
+set_nemo_background()
+
+# ===============================
+# SIDEBAR
+# ===============================
+with st.sidebar:
+    st.markdown('<div class="sidebar-header">🐠 MENU ANALISIS LAUTAN SISWA</div>', unsafe_allow_html=True)
+    
+    st.markdown("---")
+    st.markdown("**🔧 Pengaturan Analisis**")
+    
+    # Filter kategori
+    st.subheader("🎯 Filter Kategori")
+    show_tinggi = st.checkbox("Tinggi 🐬", value=True, key="tinggi")
+    show_sedang = st.checkbox("Sedang 🐢", value=True, key="sedang")
+    show_rendah = st.checkbox("Rendah 🐠", value=True, key="rendah")
+    
+    st.markdown("---")
+    st.markdown("**📈 Pengaturan Visualisasi**")
+    
+    # Pengaturan chart
+    chart_size = st.slider("Ukuran Chart", min_value=8, max_value=15, value=10, key="chart_size")
+    point_size = st.slider("Ukuran Titik pada Scatter Plot", min_value=50, max_value=200, value=120, key="point_size")
+    
+    st.markdown("---")
+    st.markdown("**ℹ️ Informasi Aplikasi**")
+    
+    st.info("""
+    🐋 Aplikasi ini menggunakan algoritma **K-Means Clustering** untuk mengelompokkan siswa berdasarkan:
+    - 📝 Nilai Akademik
+    - 🎯 Persentase Kehadiran
+    """)
+    
+    st.markdown("---")
+    st.markdown("**🏫 Tentang**")
+    st.write("🐠 SDN 273 Gempol Sari")
+    st.write("Sistem Pendukung Keputusan Akademik")
+
+# ===============================
+# HEADER APLIKASI
+# ===============================
+st.title("🐠 Klasifikasi Performa Akademik Siswa")
+st.markdown("### Menggunakan Algoritma **K-Means Clustering** Berdasarkan **Nilai Akademik** dan **Kehadiran**")
+
+# ===============================
+# PROSES UTAMA
+# ===============================
+
+# Load data
+df = load_and_clean_data()
+
+# Tampilkan info data di sidebar
+st.sidebar.markdown("---")
+st.sidebar.markdown("**📊 Statistik Cepat**")
+st.sidebar.write(f"Total Data: {len(df)} siswa")
+
+# Clustering
+with st.spinner("🐠 Sedang melakukan clustering... Mohon tunggu"):
+    df = perform_clustering(df)
+
+# Statistik sidebar
+with st.sidebar:
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("🐬 Tinggi", len(df[df["Kategori"] == "Tinggi"]))
+    with col2:
+        st.metric("🐢 Sedang", len(df[df["Kategori"] == "Sedang"]))
+    with col3:
+        st.metric("🐠 Rendah", len(df[df["Kategori"] == "Rendah"]))
+
+# Filter data berdasarkan pilihan sidebar
+kategori_filter = []
+if show_tinggi: kategori_filter.append("Tinggi")
+if show_sedang: kategori_filter.append("Sedang")
+if show_rendah: kategori_filter.append("Rendah")
+
+# ===============================
+# TAMPILAN HASIL KLASIFIKASI
+# ===============================
+st.subheader("🎯 Hasil Klasifikasi Siswa")
+
+df_filtered = df[df["Kategori"].isin(kategori_filter)]
+df_display = df_filtered[["Nama Siswa", "Nilai Akademik", "Kehadiran(%)", "Kategori"]].reset_index(drop=True)
+
+st.dataframe(
+    df_display.style.map(color_kategori, subset=["Kategori"]),
+    use_container_width=True
+)
+
+# ===============================
+# VISUALISASI
+# ===============================
+st.subheader("📈 Visualisasi Clustering")
+fig = create_scatter_plot(df, kategori_filter, chart_size, point_size)
+st.pyplot(fig, use_container_width=True)
+plt.close(fig)
+
+# ===============================
+# STATISTIK
+# ===============================
+st.subheader("📋 Ringkasan Statistik per Kategori")
+stats = df.groupby("Kategori").agg(
+    Jumlah_Siswa=("Nama Siswa", "count"),
+    Rata_rata_Nilai=("Nilai Akademik", "mean"),
+    Rata_rata_Kehadiran=("Kehadiran(%)", "mean")
+).round(2)
+
+total_siswa = len(df)
+stats['Persentase'] = (stats['Jumlah_Siswa'] / total_siswa * 100).round(1).astype(str) + '%'
+
+st.dataframe(stats.style.background_gradient(cmap='Blues'))
+
+# ===============================
+# DOWNLOAD HASIL
+# ===============================
+st.subheader("📥 Download Hasil Analisis")
+
+@st.cache_data
+def convert_df_to_csv(df):
+    return df.to_csv(index=False).encode('utf-8')
+
+csv = convert_df_to_csv(df[["Nama Siswa", "Nilai Akademik", "Kehadiran(%)", "Kategori"]])
+
+st.download_button(
+    label="💾 Download CSV Hasil Klasifikasi",
+    data=csv,
+    file_name="hasil_klasifikasi_siswa.csv",
+    mime="text/csv",
+)
+
+# ===============================
+# INTERPRETASI HASIL
+# ===============================
+st.markdown("### 📌 Interpretasi Kategori Performa Akademik")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown("""
+    <div style='background: linear-gradient(45deg, #87CEEB, #1E90FF); padding: 20px; border-radius: 15px; color: white;'>
+    <h4>🐬 <b>Tinggi</b></h4>
+    <p><b>Performa Sangat Baik</b></p>
+    <p>Siswa memiliki nilai akademik tinggi <b>dan</b> kehadiran sangat baik. Mereka konsisten dan berpotensi menjadi teladan.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div style='background: linear-gradient(45deg, #98FB98
